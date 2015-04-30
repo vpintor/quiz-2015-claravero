@@ -8,8 +8,21 @@
     <link rel="shortcut icon" href="http://www.saferinternet.org/image/image_gallery?uuid=b243b830-e3fd-49b9-ad2c-43b2ff073db8&groupId=10137&t=1359909134797" type="image/x-icon">
   </head>
   <body>
-    <h2>Quiz: el juego de las preguntas</h2>
-    <p><%= respuesta %></p>
-    <a href="/quizes/question">Inténtelo otra vez</a>
+    <div id="page-wrap">
+      <header class="main" id="h1">
+        <h2>Quiz<span>: el juego de las preguntas</span></h2>
+      </header>
+      <nav class="main" id="n1" role="navigation">
+        <span><a href="/">Inicio</a></span>
+        <span><a href="/quizes/question">Preguntas</a></span>
+        <span><a href="/author">Author</a></span>
+      </nav>
+      <section class="main" id="s1">
+        <div><%- body %></div>
+      </section>
+      <footer class="main" id="f1">
+          <a href="http://es.wikipedia.org/wiki/Quiz">¿Qué es un Quiz?</a>
+      </footer>
+    </div>
   </body>
 </html>
