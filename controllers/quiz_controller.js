@@ -2,9 +2,16 @@ var models = require('../models/models.js');
 
 // GET /quizes
 exports.index = function(req, res) {
-  models.Quiz.findAll().then(function(quizes) {
-    res.render('quizes/index.ejs', { quizes: quizes});
-  })
+  if (req.query.hide==="1") {
+    models.Quiz.findAll({where: ["pregunta like ?", req.query.search]}).then(function(quizes) {
+      res.render('quizes/index.ejs', { quizes: quizes});
+    })
+  }
+  else {
+    models.Quiz.findAll().then(function(quizes) {
+      res.render('quizes/index.ejs', { quizes: quizes});
+    })
+  }
 };
 
 // GET /quizes/:id
