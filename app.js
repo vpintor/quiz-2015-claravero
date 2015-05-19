@@ -8,10 +8,15 @@ var partials = require('express-partials');
 var methodOverride = require('method-override');
 var session = require('express-session');
 
+//var dialog = require('dialog');
+
 var routes = require('./routes/index');
 var author = require('./routes/author');
 
 var app = express();
+
+var eo;
+var ei;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -36,9 +41,39 @@ app.use(function(req, res, next) {
   if (!req.path.match(/\/login|\/logout/)) {
     req.session.redir = req.path;
   }
+  else {
+    if (req.session.user) {
+      eo = new Date();
+      eo = eo.getSeconds() + eo.getMinutes()*60 + eo.getHours()*3600;
+      ei = 0;
+    }
+  }
 
   // Hacer visible req.session en las vistas
   res.locals.session = req.session;
+  next();
+});
+
+app.use(function(req, res, next) {
+  switch(ei) {
+    case 0:
+      ei = new Date();
+      ei = ei.getSeconds() + ei.getMinutes()*60 + ei.getHours()*3600;
+      break;
+    default:
+      eo = new Date();
+      eo = eo.getSeconds() + eo.getMinutes()*60 + eo.getHours()*3600;
+      break;
+  }
+
+  if (req.session.user && (eo - ei) > 120) {
+    req.session.destroy();
+    //dialog.info('Sesión cerrada, recargue la página');
+  }
+
+  ei = new Date();
+  ei = ei.getSeconds() + ei.getMinutes()*60 + ei.getHours()*3600;
+
   next();
 });
 
