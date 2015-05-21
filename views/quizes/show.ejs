@@ -1,30 +1,32 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Quiz</title>
-    <link rel='stylesheet' type='text/css' href='/stylesheets/style.css' />
-    <link rel='stylesheet' type='text/css' media='only screen and (min-width: 530px) and (min-devide-width: 481px)' href='/stylesheets/wide.css' />
-    <link rel='stylesheet' type='text/css' media='only screen and (max-width: 480px)' href='/stylesheets/smartphone.css' />
-    <link rel="shortcut icon" href="http://www.saferinternet.org/image/image_gallery?uuid=b243b830-e3fd-49b9-ad2c-43b2ff073db8&groupId=10137&t=1359909134797" type="image/x-icon">
+    <meta chatset="utf-8">
+    <title>Quiz Edav</title>
+    <link rel="shortcut icon" href="https://cdn3.iconfinder.com/data/icons/brain-games/128/Puzzle.png" />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <form method="get" action="/quizes/<%= quiz.id %>/answer">        
-      <%= quiz.pregunta %> <p>
-      <input type="text" name="respuesta" value="Respuesta"/>
-      <input type="submit" value="Enviar">
+    <h2>Quiz Edav</h2>
+
+    <form method="get" action="/quizes/<%= quiz.id %>/answer">
+      Pregunta: <%= quiz.pregunta %> <p>
+        <input type="text" name="respuesta" placeholder="Responda aquí"/>
+        <input type="submit" value="Enviar"/>
     </form>
 
     <p><a href="/quizes/<%= quiz.id %>/comments/new"><button>Nuevo comentario</button></a></p>
 
-    <p><strong>Comentarios:</strong></p>
-    <%for(index in quiz.Comments){%>
-      <%if(quiz.Comments[index].publicado || session.user){%>
-        <p>- <%=quiz.Comments[index].texto%>
-          <%if(session.user && !quiz.Comments[index].publicado){%>
-            <a href="/quizes/<%= quiz.id %>/comments/<%=quiz.Comments[index].id%>/publish"><button>Publicar</button></a>
-          <%}%>
-        </p>
-      <%}%> 
-    <%}%>
+        <p><strong>Comentarios:</strong></p>
+        <% for(index in quiz.Comments){ %>
+          <% if(quiz.Comments[index].publicado){ %>
+            <p>>> <%= quiz.Comments[index].texto %>
+             <% } else if (session.user && (session.user.isAdmin || (quiz.UserId === session.user.id))) { %>
+                <p>>> <%= quiz.Comments[index].texto %>
+                <a href="/quizes/<%= quiz.id %>/comments/<%=quiz.Comments[index].id%>/publish"><button>Publicar</button></a>
+              <% } %>
+            </p>
+        <% } %>
+
   </body>
 </html>
