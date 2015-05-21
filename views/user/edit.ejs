@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta chatset="utf-8">
+    <title>Quiz Edav</title>
+    <link rel="shortcut icon" href="https://cdn3.iconfinder.com/data/icons/brain-games/128/Puzzle.png" />
+    <link rel='stylesheet' type='text/css' href='/stylesheets/style.css' />
+    <link rel='stylesheet' type='text/css' media='only screen and (min-width: 530px) and (min-devide-width: 481px)' href='/stylesheets/wide.css' />
+    <link rel='stylesheet' type='text/css' media='only screen and (max-width: 480px)' href='/stylesheets/smartphone.css' />
+  </head>
+  <body>
+    <h2>Edite información de la cuenta</h2><p>
+    <form method="post" action="/user/<%= user.id %>?_method=put" >
+      <% include _form.ejs %>
+    </form>
+    <form method="post" action="/user/<%= user.id %>?_method=delete" >
+      <button type="submit" onClick="return confirm('Confirme que desea borrar la cuenta: <%= user.username %>');">
+        Eliminar cuenta
+      </button>
+    </form>
+  </body>
+</html>
