@@ -1,8 +1,8 @@
-// Definicion del modelo de Quiz con validación
+// Definición del modelo de Quiz con validación
 
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define(
-  	'Quiz',
+    'Quiz',
     { pregunta: {
         type: DataTypes.STRING,
         validate: { notEmpty: {msg: "-> Falta Pregunta"}}
@@ -10,6 +10,9 @@ module.exports = function(sequelize, DataTypes) {
       respuesta: {
         type: DataTypes.STRING,
         validate: { notEmpty: {msg: "-> Falta Respuesta"}}
+      },
+      image: {
+        type: DataTypes.STRING
       }
     }
   );
