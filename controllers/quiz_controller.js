@@ -47,6 +47,19 @@ exports.index = function(req, res) {
   }
 };
 
+// GET /quizes/:userId/quizes
+exports.myQuestions = function(req, res) {
+  var options = {};
+  if (req.user) { //req.user es creado por autoload de usuario si la ruta lleva el parametro .quiId
+    options.where = {UserId:req.user.id}
+  }
+  models.Quiz.findAll(options).then(
+    function(quizes) {
+      res.render('quizes/index.ejs', {quizes:quizes, errors: []});
+    }
+  ).catch(function(error){next(error)});
+};
+
 // GET /quizes/:id
 exports.show = function(req, res) {
   res.render('quizes/show', { quiz: req.quiz, errors: []});

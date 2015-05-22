@@ -55,7 +55,7 @@ sequelize.sync().then(function() {
   User.count().then(function(count) {
     if (count === 0) {
       User.bulkCreate(
-        [ {username: 'admin',   password: 'edav',   isAdmin: true},
+        [ {username: 'admin',   password: 'vero',   isAdmin: true},
           {username: 'pepe',    password: 'pepe'}
         ]
       ).then(function(){
