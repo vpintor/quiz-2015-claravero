@@ -33,16 +33,42 @@ exports.load = function(req, res, next, quizId) {
 
 // GET /quizes
 exports.index = function(req, res) {
+  var favs = [];
   if (req.query.search===undefined) {
     models.Quiz.findAll().then(
       function(quizes) {
-        res.render('quizes/index.ejs', {quizes: quizes, errors: []});
-      }
-    ).catch(function(error){next(error)});
+        models.Fav.findAll().then(function(favoritos){
+        for(index in quizes) {
+          for(posicion in favoritos) {
+            if (req.session && req.session.user && (favoritos[posicion].UserId === req.session.user.id) && (favoritos[posicion].QuizId === quizes[index].id)) {
+              favs[index] = true;
+              break;
+            }
+            else {
+              favs[index] = false;
+            }
+          }
+        }
+        res.render('quizes/index.ejs', {quizes: quizes, fav:false, favs:favs, models:models, errors: []});
+      })
+    }).catch(function(error){next(error)});
   }
   else {
     models.Quiz.findAll({where:["pregunta like ?", "%"+req.query.search.replace(/\s/g,"%")+"%"], order: 'pregunta ASC'}).then(function(quizes) {
-      res.render('quizes/index.ejs', { quizes: quizes, errors: []});
+      models.Fav.findAll().then(function(favoritos){
+      for(index in quizes) {
+        for(posicion in favoritos) {
+          if (req.session && req.session.user && (favoritos[posicion].UserId === req.session.user.id) && (favoritos[posicion].QuizId === quizes[index].id)) {
+            favs[index] = true;
+            break;
+          }
+          else {
+            favs[index] = false;
+          }
+        }
+      }
+      res.render('quizes/index.ejs', { quizes: quizes, fav:false, favs:favs, models:models, errors: []});
+     })
     }).catch(function(error) { next(error);})
   }
 };
@@ -50,14 +76,27 @@ exports.index = function(req, res) {
 // GET /quizes/:userId/quizes
 exports.myQuestions = function(req, res) {
   var options = {};
-  if (req.user) { //req.user es creado por autoload de usuario si la ruta lleva el parametro .quiId
+  var favs = [];
+  if (req.user) { //req.user es creado por autoload de usuario si la ruta lleva el parametro .quizId
     options.where = {UserId:req.user.id}
   }
   models.Quiz.findAll(options).then(
     function(quizes) {
-      res.render('quizes/index.ejs', {quizes:quizes, errors: []});
-    }
-  ).catch(function(error){next(error)});
+      models.Fav.findAll().then(function(f){
+      for(index in quizes) {
+        for(indexx in f) {
+          if (req.session && req.session.user && (f[indexx].UserId === req.session.user.id) && (f[indexx].QuizId === quizes[index].id)) {
+            favs[index] = true;
+            break;
+          }
+          else {
+            favs[index] = false;
+          }
+        }
+      }
+      res.render('quizes/index.ejs', {quizes:quizes, fav:false, favs:favs, models:models, errors: []});
+    })
+  }).catch(function(error){next(error)});
 };
 
 // GET /quizes/:id
@@ -144,6 +183,6 @@ exports.update = function(req, res) {
 exports.destroy = function(req, res) {
   req.quiz.destroy().then(
     function() {
-        res.redirect('/quizes');
+        res.redirect(req.get('referer'));
   }).catch(function(error){next(error)});
 };

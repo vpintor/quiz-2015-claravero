@@ -7,13 +7,14 @@ var commentController = require('../controllers/comment_controller');
 var sessionController = require('../controllers/session_controller');
 var statisticsController = require('../controllers/statistics_controller');
 var userController = require('../controllers/user_controller');
+var favouritesController = require('../controllers/favourites_controller');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Quiz Edav', errors: [] });
+  res.render('index', { title: 'Quiz Clara y Vero', errors: [] });
 });
 
-// Autoload de comandis con: quizId
+// Autoload de comandos con: quizId
 router.param('quizId', quizController.load);   // autoload: quizId
 router.param('commentId', commentController.load);  // autoload :commentId
 router.param('userId', userController.load); //autoload :userId
@@ -31,7 +32,7 @@ router.delete('/quizes/:quizId(\\d+)',              sessionController.loginRequi
 //definicion de rutas de comentarios
 router.get('/quizes/:quizId(\\d+)/comments/new',    commentController.new);
 router.post('/quizes/:quizId(\\d+)/comments',       commentController.create);
-router.get('/quizes/:quizId(\\d+)/comments/:commentId(\\d+)/publish', sessionController.loginRequired, userController.ownershipRequired, commentController.publish);
+router.get('/quizes/:quizId(\\d+)/comments/:commentId(\\d+)/publish', sessionController.loginRequired, quizController.ownershipRequired, commentController.publish);
 
 // Definición de rutas de sesion
 router.get('/login',                                sessionController.new);     // formulario login
@@ -48,5 +49,10 @@ router.get('/user/:userId(\\d+)/edit',              sessionController.loginRequi
 router.put('/user/:userId(\\d+)',                   sessionController.loginRequired, userController.ownershipRequired, userController.update);
 router.delete('/user/:userId(\\d+)',                sessionController.loginRequired, userController.ownershipRequired, userController.destroy);
 router.get('/user/:userId(\\d+)/quizes',            quizController.myQuestions); //ver las preguntas de un usuario
+
+//definición de las rutas de los favoritos
+router.get('/user/:userId(\\d+)/favourites',                   sessionController.loginRequired, favouritesController.show);
+router.put('/user/:userId(\\d+)/favourites/:quizId(\\d+)',     sessionController.loginRequired, favouritesController.fav);
+router.delete('/user/:userId(\\d+)/favourites/:quizId(\\d+)',  sessionController.loginRequired, favouritesController.unfav);
 
 module.exports = router;

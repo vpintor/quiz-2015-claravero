@@ -38,6 +38,10 @@ var Comment = sequelize.import(comment_path);
 var user_path = path.join(__dirname,'user');
 var User = sequelize.import(user_path);
 
+// Importar definicion de la tabla Favourites
+var fav_path = path.join(__dirname,'favourites');
+var Fav = sequelize.import(fav_path);
+
 Comment.belongsTo(Quiz); //asociación
 Quiz.hasMany(Comment);
 
@@ -45,10 +49,14 @@ Quiz.hasMany(Comment);
 Quiz.belongsTo(User);
 User.hasMany(Quiz);
 
+//asociación de usuarios con sus preguntas favoritas
+User.belongsToMany(Quiz, {through: 'Fav'});
+Quiz.belongsToMany(User, {through: 'Fav'});
+
 exports.Quiz = Quiz; //exportar definición de la tabla Quiz
 exports.Comment = Comment; //exportar definición de la tabla Comment
 exports.User = User; //exportar definición de la tabla User
-
+exports.Fav = Fav; //exportar definición de la tabla
 //sequelize.sync() carga e inicializa tabla de preguntas en BD
 sequelize.sync().then(function() {
   //success(..) ejecuta el manejador una vez creada la tabla
